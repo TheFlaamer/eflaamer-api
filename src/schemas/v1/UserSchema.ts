@@ -8,7 +8,6 @@ const register = yup.object().shape({
     name: yup.string().required().min(3),
     email: yup.string().email().required(),
     password: yup.string(),
-    photo: yup.string(),
     gender: yup.mixed().oneOf(["Masculino", "Feminino", "Não Binario"]),
     // phone: yup.string().test("is-valid-mobile", "${path} is not a mobile number", (value)=>parsePhoneNumber(value, "BR").isValid()),
     zipcode: yup.string(),

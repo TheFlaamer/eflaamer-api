@@ -11,6 +11,7 @@ export const productSuccessReturn = (product: IProduct): ProductReturn => {
             price: product.price,
             category: product.category,
             amount_stored: product.amount_stored,
+            photo: product.photo
         },
         links: {
             self: "/api/v1/products/" + product.id

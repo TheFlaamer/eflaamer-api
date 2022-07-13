@@ -1,4 +1,4 @@
-###eFlaamer
+### eFlaamer
 <p>This is the API of an e-commerce called eFlaamer developed with MERN-STACK and TypeScript technologies. This system was developed for study purposes only.</p>
 
 <hr>
@@ -10,6 +10,6 @@
 [x] Standardized returns 
 [ ] Validate errors
 [ ] Phone number validation
-[ ] Upload images
+[x] Upload images
 [ ] Auth middleware
 [ ] Payment gateway

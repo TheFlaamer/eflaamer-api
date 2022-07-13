@@ -20,9 +20,17 @@ const {createProduct, getProducts, findProduct, put, destroy} = Product
 
 export default class ProductController {
     public async create(req: Request, res: Response, next: NextFunction): Promise<Response> {
-        const { name, price, category, amount_stored, photo }: IProduct = req.body;
-        const data:IProduct = {name, price, category, amount_stored, photo}
+        const { name, price, category, amount_stored }: IProduct = req.body;
+        const data:IProduct = {name, price, category, amount_stored}
         try {
+
+            let photo = ""
+            const { file } = req
+            if (file) {
+                photo = `${process.env.SERVER_SECURITY}${process.env.SERVER_URL}:${process.env.SERVER_PORT}/api/v1/uploads/${file.filename}`
+                // await uploadFilesController.UploadImageService(file) //algo pro futuro com cloud
+            }
+
             const product = await createProduct(name, price, category, amount_stored, photo)
 
             if(!(await create.isValid(data))) {

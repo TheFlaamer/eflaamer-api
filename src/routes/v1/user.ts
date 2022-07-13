@@ -4,7 +4,11 @@ const routes = Router()
 import Users from '../../controller/v1/UserController'
 const UserController = new Users()
 
-routes.post("/", UserController.create)
+import multer from 'multer'
+import multerConfig from '../../config/v1/multer'
+const upload = multer(multerConfig)
+
+routes.post("/", upload.single('photo'),UserController.create)
 routes.get("/", UserController.get)
 routes.get("/:id", UserController.find)
 routes.put("/:id", UserController.put)

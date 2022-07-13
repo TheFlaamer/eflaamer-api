@@ -1,6 +1,9 @@
 //validacao com yup
 //erros
 //sistema de login fazer dps pq depende do oauth tb
+import multer from 'multer'
+import multerConfig from '../../config/v1/multer'
+const upload = multer(multerConfig)
 
 import UserRepository from "../../repositories/v1/UserRepository"
 import { Request, Response, NextFunction } from "express";
@@ -9,19 +12,42 @@ import { userSuccessReturn, userSuccessReturnToken } from "../../utils/returns";
 import { IUser } from "../../interfaces/v1/IUser";
 import bcrypt from 'bcrypt'
 import { GenerateAuthToken } from "./generateAuthToken";
-import {register} from '../../schemas/v1/UserSchema'
+import { register } from '../../schemas/v1/UserSchema'
 
 const User = new UserRepository()
 const { createUser, getUsers, findUser, put, destroy, verifyEmail } = User
 
 
+// import UploadFilesController from '../../controller/v1/UploadFilesController'
+// const uploadFilesController = new UploadFilesController()
+
+// routes.post("/files", upload.single('image'), async(req,res)=>{
+//     const { file } = req
+//     if(file) {
+//         await uploadFilesController.UploadImageService(file)
+//         return res.send()
+//     }
+// })
+
+// routes.delete("/files/:filename", async (req, res)=>{
+//     const { filename } = req.params;
+
+//     await uploadFilesController.DeleteImageService(filename)
+
+//     return response.send();
+// })
+
+
+
 export default class UserController {
     public async create(req: Request, res: Response, next: NextFunction): Promise<Response> {
-        let { name, email, password, photo, document, gender, phone, zipcode, street, city, country, state, addressNumber }: IUser = req.body
-        const data: IUser = { name, email, password, photo, document, gender, phone, zipcode, street, city, country, state, addressNumber }
 
-        if(!(await register.isValid(data))) {
-            return res.status(400).json({error: "Error on validate user schema."})
+        let { name, email, password, document, gender, phone, zipcode, street, city, country, state, addressNumber }: IUser = req.body
+
+        const data: IUser = { name, email, password, document, gender, phone, zipcode, street, city, country, state, addressNumber }
+
+        if (!(await register.isValid(data))) {
+            return res.status(400).json({ error: "Error on validate user schema." })
         }
 
         try {
@@ -33,6 +59,13 @@ export default class UserController {
                 const salt = await bcrypt.genSalt(12)
                 const passwordHash = await bcrypt.hash(password, salt)
                 password = passwordHash
+            }
+
+            let photo = ""
+            const { file } = req
+            if (file) {
+                photo = `${process.env.SERVER_SECURITY}${process.env.SERVER_URL}:${process.env.SERVER_PORT}/api/v1/uploads/${file.filename}`
+                // await uploadFilesController.UploadImageService(file) //algo pro futuro com cloud
             }
 
             const user = await createUser(name, email, password, photo, document, gender, phone, zipcode, street, city, country, state, addressNumber)
